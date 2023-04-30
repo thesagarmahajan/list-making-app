@@ -1,0 +1,107 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "user1",
+      "email": "user1@gmail.com"
+    }
+  ],
+  "lists": [
+    {
+      "id": 1,
+      "title": "Project-X",
+      "status": true
+    },
+    {
+      "id": 2,
+      "title": "Project-Y",
+      "status": true
+    }
+  ],
+  "todos": [
+    {
+      "id": 1,
+      "title": "Push code to main branch",
+      "status": true,
+      "list_id": 1
+    },
+    {
+      "title": "Complete unit tests",
+      "status": true,
+      "list_id": 1,
+      "id": 2
+    },
+    {
+      "title": "Create CI Pipeline New New",
+      "status": true,
+      "list_id": 1,
+      "id": 3
+    },
+    {
+      "title": "something",
+      "status": false,
+      "list_id": 1,
+      "id": 4
+    },
+    {
+      "title": "some todo",
+      "status": false,
+      "list_id": 1,
+      "id": 5
+    },
+    {
+      "title": "New Item",
+      "status": true,
+      "list_id": 2,
+      "id": 6
+    },
+    {
+      "title": "Some task",
+      "status": false,
+      "list_id": 2,
+      "id": 7
+    },
+    {
+      "id": 8,
+      "title": "another task",
+      "status": false,
+      "list_id": 2
+    },
+    {
+      "id": 9,
+      "title": "Task 4",
+      "status": true,
+      "list_id": 2
+    },
+    {
+      "id": 10,
+      "title": "isad",
+      "status": false,
+      "list_id": 2
+    },
+    {
+      "id": 11,
+      "title": "some",
+      "status": true,
+      "list_id": 2
+    },
+    {
+      "id": 12,
+      "title": "Some new thing",
+      "status": false,
+      "list_id": 1
+    },
+    {
+      "id": 13,
+      "title": "Something Something",
+      "status": true,
+      "list_id": 1
+    },
+    {
+      "id": 14,
+      "title": "Som enew task",
+      "status": false,
+      "list_id": 1
+    }
+  ]
+}
