@@ -18,7 +18,7 @@
       "status": true
     }
   ],
-  "todos": [
+  "items": [
     {
       "id": 1,
       "title": "Push code to main branch",
@@ -38,7 +38,7 @@
       "id": 3
     },
     {
-      "title": "something",
+      "title": "something new",
       "status": false,
       "list_id": 1,
       "id": 4

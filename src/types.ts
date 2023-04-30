@@ -1,4 +1,4 @@
-export interface todo{
+export interface item{
     id:number;
     title:string;
     status:boolean;

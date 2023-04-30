@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { base_url } from '../config';
-import { todo } from '../types';
+import { item } from '../types';
 import {Link, useParams} from 'react-router-dom'
 import {Form, Container, Button, Col, Row, Spinner, Modal } from 'react-bootstrap';
 
 
 interface ListItemProps {
-  currentTodo:todo;
-  handleCheckUncheck:(currentTodo:todo)=>void;
-  makeModalVisibleMethodRef:(currentTodo:todo)=>void;
+  currentItem:item;
+  handleCheckUncheck:(currentItem:item)=>void;
+  makeModalVisibleMethodRef:(currentItem:item)=>void;
 }
 
 interface EditModalPropsType {
   modalVisibility:boolean;
   makeModalInvisibleMethodRef:()=>void;
-  todoToUpdate:todo;
+  itemToUpdate:item;
   handleModalTextboxChangeMethodRef:(e:any)=>void,
   handleModalUpdateClickMethodRef:()=>void
 }
@@ -28,7 +28,7 @@ function EditItemModal(props:EditModalPropsType){
       <Modal.Body>
         <Form>
           <Form.Group>
-            <Form.Control type="text" value={props.todoToUpdate.title} onChange={props.handleModalTextboxChangeMethodRef}/>    
+            <Form.Control type="text" value={props.itemToUpdate.title} onChange={props.handleModalTextboxChangeMethodRef}/>    
           </Form.Group>
           <br />
           <Form.Group className="d-flex justify-content-center">
@@ -43,9 +43,9 @@ function EditItemModal(props:EditModalPropsType){
 function ListItem(props:ListItemProps){
   return (<>
     <li className='d-flex'>
-        <Form.Check type='checkbox' label={props.currentTodo.status?<del>{props.currentTodo.title}</del>:props.currentTodo.title} checked={props.currentTodo.status} onChange={()=>props.handleCheckUncheck(props.currentTodo)}/>
+        <Form.Check type='checkbox' label={props.currentItem.status?<del>{props.currentItem.title}</del>:props.currentItem.title} checked={props.currentItem.status} onChange={()=>props.handleCheckUncheck(props.currentItem)}/>
         &nbsp;
-        <Button disabled={props.currentTodo.status} variant="primary" className="ml-5" onClick={()=>props.makeModalVisibleMethodRef(props.currentTodo)}>E</Button>
+        <Button disabled={props.currentItem.status} variant="primary" className="ml-5" onClick={()=>props.makeModalVisibleMethodRef(props.currentItem)}>E</Button>
     </li>
   </>)
 }
@@ -54,8 +54,8 @@ export default function EditList(){
     const {listId} = useParams();
     let [modalVisibility, setModalVisibility] = useState<boolean>(false);
     // console.log(typeof())
-    let [todos, setTodos] = useState<todo[]>([]);
-    let [newTodo, setNewTodo] = useState<todo>({
+    let [items, setItems] = useState<item[]>([]);
+    let [newItem, setNewItem] = useState<item>({
         id:0,
         title:"",
         status:false,
@@ -63,7 +63,7 @@ export default function EditList(){
     });
     let [listName, setListName] = useState("");
 
-    let [todoToEdit, setTodoToEdit] = useState<todo>({
+    let [itemToEdit, setItemToEdit] = useState<item>({
       id:0,
       title:"",
       status:false,
@@ -72,14 +72,14 @@ export default function EditList(){
 
     function handleModalTextboxChange(e:any){
       console.log(e.target.value)
-      setTodoToEdit({...todoToEdit, title:e.target.value})
+      setItemToEdit({...itemToEdit, title:e.target.value})
     }
 
 
-  function fetchTodos(){
+  function fetchItems(){
     
-      fetch(`${base_url}/todos?list_id=${listId}`).then((res:any)=>res.json()).then((fetchedTodos:any)=>{
-        setTodos(fetchedTodos)
+      fetch(`${base_url}/items?list_id=${listId}`).then((res:any)=>res.json()).then((fetchedItems:any)=>{
+        setItems(fetchedItems)
       })
     
   }
@@ -90,11 +90,11 @@ export default function EditList(){
 
   useEffect(()=>{
     fetchListName()
-    fetchTodos()
+    fetchItems()
   },[])
 
   function handleChange(e:any){
-    setNewTodo({
+    setNewItem({
         id:0,
         title:e.target.value,
         status:false,
@@ -104,21 +104,21 @@ export default function EditList(){
 
   function handleSubmit(e:any){
     e.preventDefault();
-    console.log(todos)
-    setTodos([...todos, newTodo])
-    fetch(`${base_url}/todos`, {
+    console.log(items)
+    setItems([...items, newItem])
+    fetch(`${base_url}/items`, {
       method:"POST",
       headers:{"Content-type":"application/json"},
-      body:JSON.stringify(newTodo)
+      body:JSON.stringify(newItem)
     }).then((res:any)=>{
       if(res.status==201){
-        setNewTodo({
+        setNewItem({
             id:0,
             title:"",
             status:false,
             list_id:Number(listId)
         })
-        fetchTodos()
+        fetchItems()
       }
       else{
 
@@ -126,46 +126,46 @@ export default function EditList(){
     })
   }
 
-  function handleCheckUncheck(todoToUpdate:todo){
-    todoToUpdate.status=!todoToUpdate.status
-    console.log(todoToUpdate)
+  function handleCheckUncheck(itemToUpdate:item){
+    itemToUpdate.status=!itemToUpdate.status
+    console.log(itemToUpdate)
     
-    let filteredTodos:todo[] = todos.map((currentTodo:todo)=>{
-          if(currentTodo.id==todoToUpdate.id){
-            fetch(`${base_url}/todos/${todoToUpdate.id}`, {
+    let filteredItems:item[] = items.map((currentItem:item)=>{
+          if(currentItem.id==itemToUpdate.id){
+            fetch(`${base_url}/items/${itemToUpdate.id}`, {
               method:"PUT",
               headers:{"Content-type":"application/json"},
-              body:JSON.stringify(todoToUpdate)
+              body:JSON.stringify(itemToUpdate)
             }).then((res:any)=>{
               console.log(res)
-              currentTodo.status=todoToUpdate.status
+              currentItem.status=itemToUpdate.status
             })
             
           }
-          return currentTodo
+          return currentItem
     })
-    console.log(filteredTodos)
-    setTodos(filteredTodos)
+    console.log(filteredItems)
+    setItems(filteredItems)
   }
 
-  function makeModalVisible(currentTodo:todo){
-    console.log(currentTodo);
-    setTodoToEdit(currentTodo)
+  function makeModalVisible(currentItem:item){
+    console.log(currentItem);
+    setItemToEdit(currentItem)
     setModalVisibility(true);
   }
 
   function handleModalUpdateClick(){
-    console.log(todoToEdit)
-    fetch(`${base_url}/todos/${todoToEdit.id}`, 
+    console.log(itemToEdit)
+    fetch(`${base_url}/items/${itemToEdit.id}`, 
     {
       method:"PUT",
       headers:{
         "Content-Type":"application/json"
       },
-      body:JSON.stringify(todoToEdit)
+      body:JSON.stringify(itemToEdit)
     }).then(res=>{
       setModalVisibility(false)
-      fetchTodos()
+      fetchItems()
     }).catch(err=>{
       alert("Some Error")
       console.log(err)
@@ -197,7 +197,7 @@ export default function EditList(){
                 <Form.Group className="mb-3" >
                         <Form.Label>Add Item:</Form.Label>
                         <div className=' d-flex mx-auto'>
-                            <Form.Control type='text' value={newTodo.title} placeholder='Add Item' onChange={handleChange} />
+                            <Form.Control type='text' value={newItem.title} placeholder='Add Item' onChange={handleChange} />
                             <Button type="submit" variant="primary"><h3>+</h3></Button>
                         </div>   
                 </Form.Group>
@@ -207,15 +207,15 @@ export default function EditList(){
             }
             <ul>
                 {
-                todos.map((i:todo)=>{
+                items.map((i:item)=>{
                     return(<>
-                        <ListItem currentTodo={i} handleCheckUncheck={handleCheckUncheck} makeModalVisibleMethodRef={makeModalVisible}/>
+                        <ListItem currentItem={i} handleCheckUncheck={handleCheckUncheck} makeModalVisibleMethodRef={makeModalVisible}/>
                     </>)
                 })
                 }
             </ul>
             </h3>
-            <EditItemModal handleModalUpdateClickMethodRef={handleModalUpdateClick} todoToUpdate={todoToEdit} modalVisibility={modalVisibility} makeModalInvisibleMethodRef={makeModalInvisible} handleModalTextboxChangeMethodRef={handleModalTextboxChange}/>
+            <EditItemModal handleModalUpdateClickMethodRef={handleModalUpdateClick} itemToUpdate={itemToEdit} modalVisibility={modalVisibility} makeModalInvisibleMethodRef={makeModalInvisible} handleModalTextboxChangeMethodRef={handleModalTextboxChange}/>
         </Container>
     </>
   );
